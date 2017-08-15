@@ -1,8 +1,12 @@
 
 const routes = [
   {
-    path: '/',
+    path: '/pc',
     getComponents: (a, cb) => import("../../component/ChinaAreaSelectorPC/demo").then(mod => cb(null, mod.default))
+  },
+  {
+    path: '/mobile',
+    getComponents: (a, cb) => import("../../component/ChinaAreaSelector/demo").then(mod => cb(null, mod.default))
   }
 ]
 

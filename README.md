@@ -4,12 +4,15 @@ mac
 ```
   npm install
   sudo npm run dev
-  打开浏览器，输入 http://0.0.0.0:8080/ChinaAreaSelector/#/
+  打开浏览器
+  输入 http://0.0.0.0:8080/ChinaAreaSelector/#/pc
+  输入 http://0.0.0.0:8080/ChinaAreaSelector/#/mobile
 ```
 
 demo link
 
 ```
   打开浏览器开发者工具，查看数据变动
-  https://lzsheng.github.io/react-ChinaAreaSelector/dist/ChinaAreaSelector/#/
+  https://lzsheng.github.io/react-ChinaAreaSelector/dist/ChinaAreaSelector/#/pc
+  https://lzsheng.github.io/react-ChinaAreaSelector/dist/ChinaAreaSelector/#/mobile
 ```
