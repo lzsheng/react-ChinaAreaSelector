@@ -11,5 +11,5 @@ demo link
 
 ```
   打开浏览器开发者工具，查看数据变动
-  https://lzsheng.github.io/ChinaAreaSelector/#/
+  https://lzsheng.github.io/react-ChinaAreaSelector/dist/ChinaAreaSelector/#/
 ```
