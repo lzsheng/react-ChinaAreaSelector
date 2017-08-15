@@ -118,7 +118,10 @@ class ChinaAreaSelector extends Component {
     console.log('-----handleChangeArea-----')
     console.log('handleChangeArea', id)
     const { city } = this
-    if (typeof city.child === 'undefined') { return }
+    if (typeof city.child === 'undefined') {
+      this.toSetState('area', {})
+      return
+    }
     let _value = city.child.filter((el, i) => (el.id == id))[0]
     if (typeof _value === 'undefined') {
       _value = city.child[0]
