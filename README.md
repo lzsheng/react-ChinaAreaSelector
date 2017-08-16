@@ -1,5 +1,7 @@
 ## react-ChinaAreaSelector v0.0.1
 
+#### 数据来源于 腾讯位置服务 http://lbs.qq.com/webservice_v1/guide-region.html
+
 mac
 ```
   npm install
