@@ -137,7 +137,7 @@ class ChinaAreaSelector extends Component {
     }
     if (area && area.id) {
       _outputValue.ids.push(area.id)
-      _outputValue.names.push(area.names)
+      _outputValue.names.push(area.name)
     }
     if (typeof this.props.onChange === 'function') {
       this.props.onChange(_outputValue)

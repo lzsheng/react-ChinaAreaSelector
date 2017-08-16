@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { data } from './ChinaAreaData/data'
+import { data } from './ChinaAreaData/data2'
 import './index.styl'
 
 class ChinaAreaSelector extends Component {
