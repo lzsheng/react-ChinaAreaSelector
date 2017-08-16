@@ -1,6 +1,10 @@
+
+/* ====去除了 港澳台 数据==== */
+
 //2017-05-25 by lzsheng
 //数据来源于腾讯http://lbs.qq.com/webservice_v1/guide-region.html
 //数据来源的请求http://apis.map.qq.com/ws/district/v1/list?key=3LBBZ-AVSRF-XHQJO-JIOHV-GNOU6-TJFKL
+
 
 // let data = qqData.result//请求回来的数据
 

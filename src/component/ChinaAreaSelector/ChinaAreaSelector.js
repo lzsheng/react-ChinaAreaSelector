@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { data } from './ChinaAreaData/data'
+import { data } from './ChinaAreaData/data2'
 import Hammer from 'hammerjs'
 import Swiper from './lib/swiper-3.4.2.min'
 import './index.styl'
@@ -10,10 +10,36 @@ class ChinaAreaSelector extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      allSwiperInitComplete: false
+      open: this.props.open || false
     }
+    console.log(this.props.value)
+    this.resetData()
+  }
 
-    this.defaultValue = (this.props.defaultValue && this.props.defaultValue.length > 0) ? this.props.defaultValue : ["440000", "440100", "440106"]//默认数据
+  componentDidMount() {
+
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.open && !this.state.open) {
+      this.setState({
+        open: nextProps.open
+      });
+      this.resetData()
+    }
+  }
+
+  componentWillUnmount() {
+
+  }
+
+  //多次打开控件，重置数据和swiper的实例
+  resetData = () => {
+
+    //数据是否实时同步
+    this.sync = this.props.sync || false
+    //默认选中的数据
+    this.ids = (this.props.value.ids && this.props.value.ids.length > 0) ? this.props.value.ids : ["440000", "440100", "440106"]
 
     //原始数据
     this.DATA = data
@@ -23,10 +49,6 @@ class ChinaAreaSelector extends Component {
     this.city = {}
     //选中的区数据
     this.area = {}
-
-    //计时器
-    this.outputValueTimer = null
-
 
     //swiper相关
     this.commonConfig = {
@@ -43,44 +65,17 @@ class ChinaAreaSelector extends Component {
       swiper_ChinaAreaSelectorCity: undefined,
       swiper_ChinaAreaSelectorArea: undefined
     }
-
-  }
-
-  componentDidMount() {
-    window.kk = this;
-  }
-
-  componentWillReceiveProps(nextProps) {
-    //默认值动态改变时（hack 父组件的初始化数据为异步数据时)
-    if (nextProps.defaultValue && nextProps.defaultValue.length > 0) {
-      if (nextProps.defaultValue.length != this.defaultValue.length) {
-        this.initSelector(nextProps.defaultValue)
-      } else {
-        let isDifferent = false
-        nextProps.defaultValue.forEach((el, i) => {
-          if (el != this.defaultValue[i]) {
-            isDifferent = true
-          }
-        })
-        if (isDifferent) {
-          this.defaultValue = nextProps.defaultValue
-          this.initSelector(nextProps.defaultValue)
-        }
-      }
-    }
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.outputValueTimer)
   }
 
   //初始化
-  initSelector = (value) => {
+  initSelector = () => {
     // return false //test
-    console.log("initSelector", value)
-    const pId = value[0]
-    const cId = value[1]
-    const aId = value[2]
+    // const { value, defaultValue } = this
+    const _value = this.ids
+    console.log("initSelector", _value)
+    const pId = _value[0]
+    const cId = _value[1]
+    const aId = _value[2]
     let pIndex, cIndex, aIndex = 0
     const pData = this.DATA.filter((el, i) => {
       if (el.id == pId) {
@@ -95,16 +90,19 @@ class ChinaAreaSelector extends Component {
       }
     })[0]
 
-    let aData = cData.child.filter((el, i) => {
-      if (el.id == aId) {
-        aIndex = i
-        return true
+    //区数据有可能为空
+    let aData = undefined
+    if (typeof cData.child != 'undefined') {
+      aData = cData.child.filter((el, i) => {
+        if (el.id == aId) {
+          aIndex = i
+          return true
+        }
+      })[0]
+      if (typeof aData === 'undefined') {
+        aData = cData.child[0]
       }
-    })[0]
-    if (typeof aData === 'undefined') {
-      aData = cData.child[0]
     }
-
     //设置数据
     this.toSetState('province', pData)
     this.toSetState('city', cData)
@@ -121,21 +119,29 @@ class ChinaAreaSelector extends Component {
     console.log('toSetState', dataName, _obj)
     this[dataName] = _obj
     this.forceUpdate()//更新视图
-    this.outputValue()
+    if (this.sync) {
+      this.outputValue()//选择时，实时同步数据
+    }
   }
 
+  /**
+   *
+   * 如果没有"区"数据，则返回值ids.length === 2
+   *
+   */
   outputValue = () => {
-    clearTimeout(this.outputValueTimer)
-    this.outputValueTimer = setTimeout(() => {
-      const { province, city, area } = this
-      const _outputValue = {
-        ids: [province.id, city.id, area.id],
-        names: [province.name, city.name, area.name]
-      }
-      if (typeof this.props.onChange === 'function') {
-        this.props.onChange(_outputValue)
-      }
-    }, 150)
+    const { province, city, area } = this
+    let _outputValue = {
+      ids: [province.id, city.id],
+      names: [province.name, city.name]
+    }
+    if (area && area.id) {
+      _outputValue.ids.push(area.id)
+      _outputValue.names.push(area.names)
+    }
+    if (typeof this.props.onChange === 'function') {
+      this.props.onChange(_outputValue)
+    }
   }
 
   handleChangeProvince = (id) => {
@@ -192,7 +198,7 @@ class ChinaAreaSelector extends Component {
     const keys = Object.keys(this.myrefs)
 
     if (!this.swipers.swiper_ChinaAreaSelectorProvince && keys.filter((el) => (el === 'ChinaAreaSelectorProvince')).length > 0) {
-      new Swiper('#ChinaAreaSelectorProvince', {
+      new Swiper(_this.myrefs.ChinaAreaSelectorProvince, {
         ...this.commonConfig,
         onTransitionEnd: function (swiper) {
           const activeIndex = swiper.activeIndex
@@ -208,7 +214,7 @@ class ChinaAreaSelector extends Component {
     }
 
     if (!this.swipers.swiper_ChinaAreaSelectorCity && keys.filter((el) => (el === 'ChinaAreaSelectorCity')).length > 0) {
-      new Swiper('#ChinaAreaSelectorCity', {
+      new Swiper(_this.myrefs.ChinaAreaSelectorCity, {
         ...this.commonConfig,
         onTransitionEnd: function (swiper) {
           const activeIndex = swiper.activeIndex
@@ -223,7 +229,7 @@ class ChinaAreaSelector extends Component {
     }
 
     if (!this.swipers.swiper_ChinaAreaSelectorArea && keys.filter((el) => (el === 'ChinaAreaSelectorArea')).length > 0) {
-      new Swiper('#ChinaAreaSelectorArea', {
+      new Swiper(_this.myrefs.ChinaAreaSelectorArea, {
         ...this.commonConfig,
         onTransitionEnd: function (swiper) {
           const activeIndex = swiper.activeIndex
@@ -253,71 +259,106 @@ class ChinaAreaSelector extends Component {
       }
     })
     if (_keys.length === initNum) {
-      this.initSelector(this.defaultValue)
-      this.setState({
-        allSwiperInitComplete: true
-      });
+      this.initSelector()
     }
+  }
+
+  okBtnClick = () => {
+    this.outputValue()
+    this.toClose()
+  }
+
+  cancelBtnClick = () => {
+    this.toClose()
+  }
+
+  toClose = () => {
+    this.setState({
+      open: false
+    });
+    this.props.close(true)
   }
 
   render() {
     const { province, city, area } = this
-    // if (!province.id) {
-    //   return null
-    // } else {
-    console.log("------render------")
+    const { open } = this.state
+    console.log("------render------", open)
+    if (!open) {
+      return null
+    }
+
     // console.log("province", province, "city", city, "area", area)
     return (
-      <div>
-        <div className="mask">
-          <div className="mask-wrap">
-            <div className="swiper-container" id="ChinaAreaSelectorProvince" ref={(ref) => { this.saveRef('ChinaAreaSelectorProvince', ref) }}>
-              <div className="swiper-wrapper">
-                {this.DATA.map((el, i) => {
-                  return (
-                    <div className="swiper-slide" data-value={el.id} key={el.id}>{el.name}</div>
-                  )
-                })}
-              </div>
+      <div className="ChinaAreaSelector">
+        <div className="CAS_mask">
+          <div className="CAS_container">
+            <div className="CAS_topbar">
+              <div className="CAS_topbar_btn" onClick={!this.sync && this.cancelBtnClick}>{!this.sync ? '取消' : ''}</div>
+              <div className="CAS_topbar_title">选择地区</div>
+              <div className="CAS_topbar_btn CAS_topbar_btn--right" onClick={this.okBtnClick}>确认</div>
             </div>
-
-            {province && province.id &&
-              <div className="swiper-container" id="ChinaAreaSelectorCity" ref={(ref) => { this.saveRef('ChinaAreaSelectorCity', ref) }}>
+            <div className="CAS_content">
+              <div className="swiper-container" ref={(ref) => { this.saveRef('ChinaAreaSelectorProvince', ref) }}>
                 <div className="swiper-wrapper">
-                  {province.child.map((el, i) => {
+                  {this.DATA.map((el, i) => {
                     return (
                       <div className="swiper-slide" data-value={el.id} key={el.id}>{el.name}</div>
                     )
                   })}
                 </div>
               </div>
-            }
 
-            {city &&
-              <div className="swiper-container" id="ChinaAreaSelectorArea" ref={(ref) => { this.saveRef('ChinaAreaSelectorArea', ref) }}>
-                <div className="swiper-wrapper">
-                  {city.child && city.child.map((el, i) => {
-                    return (
-                      <div className="swiper-slide" data-value={el.id} key={el.id}>{el.name}</div>
-                    )
-                  })}
+              {province && province.id &&
+                <div className="swiper-container" ref={(ref) => { this.saveRef('ChinaAreaSelectorCity', ref) }}>
+                  <div className="swiper-wrapper">
+                    {province.child.map((el, i) => {
+                      return (
+                        <div className="swiper-slide" data-value={el.id} key={el.id}>{el.name}</div>
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
-            }
+              }
 
+              {city &&
+                <div className="swiper-container" ref={(ref) => { this.saveRef('ChinaAreaSelectorArea', ref) }}>
+                  <div className="swiper-wrapper">
+                    {city.child && city.child.map((el, i) => {
+                      return (
+                        <div className="swiper-slide" data-value={el.id} key={el.id}>{el.name}</div>
+                      )
+                    })}
+                  </div>
+                </div>
+              }
+
+            </div>
           </div>
         </div>
 
-
       </div>
-    );
-    // }
+    )
 
   }
 }
 
-ChinaAreaSelector.propTypes = {
 
+ChinaAreaSelector.defaultProps = {
+  value: {
+    ids: ["440000", "440100", "440106"],
+    name: ["广东省", "广州市", "天河区"]
+  },//默认值的数据格式
+  onChange: function () { },
+  close: function () { },
+  sync: false,
+}
+
+ChinaAreaSelector.propTypes = {
+  open: PropTypes.bool.isRequired,//是否打开控件
+  value: PropTypes.object,//值,格式如
+  onChange: PropTypes.func,
+  close: PropTypes.func,
+  sync: PropTypes.bool,
 };
 
 export default ChinaAreaSelector;

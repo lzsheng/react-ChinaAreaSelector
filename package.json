@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server  --inline --hot --config build/webpack.dev.config.js --port 8080  --host 0.0.0.0 --content-base ./dist",
+    "dev": "webpack-dev-server  --inline --hot --config build/webpack.dev.config.js --port 8081 --host 0.0.0.0 --content-base ./dist",
     "dev-https": "webpack-dev-server  --inline --hot --config build/webpack.dev.config.js --port 443 --https  --host 0.0.0.0 --content-base ./dist",
     "build": "node ./bin/build.js"
   },

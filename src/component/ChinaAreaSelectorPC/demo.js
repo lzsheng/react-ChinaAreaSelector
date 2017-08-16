@@ -6,7 +6,7 @@ class Demo extends Component {
     super(props);
     this.state = {
       ChinaAreaSelectorDefaultValue: ["440000", "440100", "440105"],
-      ChinaAreaSelectorValue: undefined
+      ChinaAreaSelectorValue: undefined,
     }
   }
   componentDidMount() {
