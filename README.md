@@ -13,6 +13,7 @@ demo link
 
 ```
   打开浏览器开发者工具，查看数据变动
-  https://lzsheng.github.io/react-ChinaAreaSelector/dist/ChinaAreaSelector/#/pc
-  https://lzsheng.github.io/react-ChinaAreaSelector/dist/ChinaAreaSelector/#/mobile
+  移动版链接: https://lzsheng.github.io/react-ChinaAreaSelector/dist/ChinaAreaSelector/#/mobile
+  PC版链接：https://lzsheng.github.io/react-ChinaAreaSelector/dist/ChinaAreaSelector/#/pc
+
 ```
