@@ -1,3 +1,8 @@
+/**
+ * create by lzsheng
+ * 2017-08-017
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { data } from './ChinaAreaData/data2'

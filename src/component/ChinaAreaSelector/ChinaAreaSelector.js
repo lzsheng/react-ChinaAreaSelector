@@ -1,10 +1,15 @@
+/**
+ * create by lzsheng
+ * 2017-08-017
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { data } from './ChinaAreaData/data2'
 import Hammer from 'hammerjs'
 import Swiper from './lib/swiper-3.4.2.min'
 import './index.styl'
-import './lib/swiper-3.4.2.min.css'
+import './lib/swiper.css'
 
 class ChinaAreaSelector extends Component {
   constructor(props) {
