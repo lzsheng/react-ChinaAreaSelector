@@ -9,7 +9,6 @@ mac
   打开浏览器
   输入 http://0.0.0.0:8080/ChinaAreaSelector/#/pc
   输入 http://0.0.0.0:8080/ChinaAreaSelector/#/mobile
-
 ```
 
 demo link
