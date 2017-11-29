@@ -29,8 +29,6 @@ class ChinaAreaSelector extends Component {
     //计时器
     this.outputValueTimer = null
 
-    this.hammerScrollTimer = null
-
   }
 
   componentDidMount() {
